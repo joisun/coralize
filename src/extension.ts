@@ -61,7 +61,8 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
         'activityBar.foreground': getContrastingColor(color),
         'activityBar.inactiveForeground': setAlpha(getContrastingColor(color),0.7),
       },
-      vscode.ConfigurationTarget.Global,
+      // vscode.ConfigurationTarget.Global,全局配置
+      vscode.ConfigurationTarget.Workspace,// 局部配置
     );
   }
 
@@ -72,11 +73,6 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
   //   }
   // }
 
-  // public clearColors() {
-  //   if (this._view) {
-  //     this._view.webview.postMessage({ type: 'clearColors' });
-  //   }
-  // }
 
   private _getHtmlForWebview(webview: vscode.Webview) {
     // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
