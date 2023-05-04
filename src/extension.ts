@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-
+import { getContrastingColor,setAlpha } from "./utils/utils"
 export function activate(context: vscode.ExtensionContext) {
   const provider = new ColorsViewProvider(context.extensionUri);
 
@@ -19,7 +19,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
 
   private _view?: vscode.WebviewView;
 
-  constructor(private readonly _extensionUri: vscode.Uri) {}
+  constructor(private readonly _extensionUri: vscode.Uri) { }
 
   public resolveWebviewView(
     webviewView: vscode.WebviewView,
@@ -54,10 +54,12 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
       'workbench.colorCustomizations',
       {
         'titleBar.activeBackground': color,
+        "titleBar.activeForeground": getContrastingColor(color),
         'titleBar.inactiveBackground': color,
+        'titleBar.inactiveForeground': getContrastingColor(color),
         'activityBar.background': color,
-        'activityBar.foreground': '#f40',
-        'activityBar.inactiveForeground': '#0f0',
+        'activityBar.foreground': getContrastingColor(color),
+        'activityBar.inactiveForeground': setAlpha(getContrastingColor(color),0.7),
       },
       vscode.ConfigurationTarget.Global,
     );
@@ -82,6 +84,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
     const colorsDataScriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'colors.js'));
 
     // Do the same for the stylesheet.
+    const fontUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'font.css'));
     const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'reset.css'));
     const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'vscode.css'));
     const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.css'));
@@ -98,6 +101,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="reset.css" />
 		<link href="${styleResetUri}" rel="stylesheet">
+		<link href="${fontUri}" rel="stylesheet">
 		<link href="${styleVSCodeUri}" rel="stylesheet">
 		<link href="${styleMainUri}" rel="stylesheet">
 		<script src="${colorsDataScriptUri}"></script>
@@ -167,4 +171,4 @@ function getNonce() {
   return text;
 }
 
-export function deactivate() {}
+export function deactivate() { }
