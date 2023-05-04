@@ -54,12 +54,17 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
       'workbench.colorCustomizations',
       {
         'titleBar.activeBackground': color,
-        "titleBar.activeForeground": getContrastingColor(color),
+        "titleBar.activeForeground": setAlpha(getContrastingColor(color),0.3),
         'titleBar.inactiveBackground': color,
         'titleBar.inactiveForeground': getContrastingColor(color),
         'activityBar.background': color,
         'activityBar.foreground': getContrastingColor(color),
-        'activityBar.inactiveForeground': setAlpha(getContrastingColor(color),0.7),
+        'activityBar.inactiveForeground': setAlpha(getContrastingColor(color),0.3),
+        "statusBar.background": color,
+        "statusBar.foreground": getContrastingColor(color),
+        "statusBarItem.hoverBackground": setAlpha(getContrastingColor(color),0.3),
+        "statusBarItem.remoteBackground": color,
+        "statusBarItem.remoteForeground":  getContrastingColor(color),
       },
       // vscode.ConfigurationTarget.Global,全局配置
       vscode.ConfigurationTarget.Workspace,// 局部配置
