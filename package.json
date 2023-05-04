@@ -2,12 +2,12 @@
   "name": "coralize",
   "displayName": "coralize",
   "description": "customize the color of vscode window",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "sunzhongyi",
   "engines": {
     "vscode": "^1.78.0"
   },
-  "repository":"https://github.com/jaycethanks/coralize/tree/main",
+  "repository": "https://github.com/jaycethanks/coralize/tree/main",
   "categories": [
     "Other"
   ],
