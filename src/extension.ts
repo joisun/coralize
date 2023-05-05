@@ -21,7 +21,7 @@ async function setColorForVscodeWindow(color: string) {
     'workbench.colorCustomizations',
     {
       'titleBar.activeBackground': color,
-      'titleBar.activeForeground': setAlpha(getContrastingColor(color), 0.3),
+      'titleBar.activeForeground': getContrastingColor(color),
       'titleBar.inactiveBackground': color,
       'titleBar.inactiveForeground': getContrastingColor(color),
       'activityBar.background': color,
