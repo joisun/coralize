@@ -8,5 +8,24 @@
   },
   // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
   "typescript.tsc.autoDetect": "off",
-  "peacock.color": "#49885c"
+  "peacock.color": "#49885c",
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#5ca873",
+    "activityBar.background": "#5ca873",
+    "activityBar.foreground": "#15202b",
+    "activityBar.inactiveForeground": "#15202b99",
+    "activityBarBadge.background": "#dbd5e9",
+    "activityBarBadge.foreground": "#15202b",
+    "commandCenter.border": "#e7e7e799",
+    "sash.hoverBorder": "#5ca873",
+    "statusBar.background": "#49885c",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#5ca873",
+    "statusBarItem.remoteBackground": "#49885c",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "titleBar.activeBackground": "#49885c",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#49885c99",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  }
 }

@@ -4,6 +4,7 @@
   "description": "customize the color of vscode window",
   "version": "0.0.2",
   "publisher": "sunzhongyi",
+  "icon": "sd",
   "engines": {
     "vscode": "^1.78.0"
   },
@@ -30,7 +31,7 @@
         {
           "id": "coralize-view",
           "title": "Coralize",
-          "icon": "resources/package-explorer.svg"
+          "icon": "resources/coralize.svg"
         }
       ]
     },
@@ -42,6 +43,18 @@
           "name": ""
         }
       ]
+    },
+    "configuration": {
+      "title": "Coralzie",
+      "properties": {
+        "coralize.color": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null
+        }
+      }
     }
   },
   "scripts": {

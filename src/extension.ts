@@ -1,6 +1,45 @@
 import * as vscode from 'vscode';
-import { getContrastingColor,setAlpha } from "./utils/utils"
+
+import { getContrastingColor, setAlpha } from './utils/utils';
+
+function recoverColorConfig() {
+  // 恢复用户颜色配置,用于解决Peacock 插件的冲突问题
+  // 该方法没啥用， 因为peacock 直接在vscode 的reload生命周期 去恢复了。
+  const config = vscode.workspace.getConfiguration();
+  const _color = config.get('coralize.color') as string;
+  setColorForVscodeWindow(_color);
+}
+async function persistColorConfig(color: string) {
+  // 持久化coralize 配置到 .vscode/settings.json,该配置字段需要在 package.json 中注册
+  // https://code.visualstudio.com/api/extension-capabilities/common-capabilities#configuration
+  const config = vscode.workspace.getConfiguration();
+  await config.update('coralize.color', color, vscode.ConfigurationTarget.Workspace);
+}
+async function setColorForVscodeWindow(color: string) {
+  const config = vscode.workspace.getConfiguration();
+  await config.update(
+    'workbench.colorCustomizations',
+    {
+      'titleBar.activeBackground': color,
+      'titleBar.activeForeground': setAlpha(getContrastingColor(color), 0.3),
+      'titleBar.inactiveBackground': color,
+      'titleBar.inactiveForeground': getContrastingColor(color),
+      'activityBar.background': color,
+      'activityBar.foreground': getContrastingColor(color),
+      'activityBar.inactiveForeground': setAlpha(getContrastingColor(color), 0.3),
+      'statusBar.background': color,
+      'statusBar.foreground': getContrastingColor(color),
+      'statusBarItem.hoverBackground': setAlpha(getContrastingColor(color), 0.3),
+      'statusBarItem.remoteBackground': color,
+      'statusBarItem.remoteForeground': getContrastingColor(color),
+    },
+    // vscode.ConfigurationTarget.Global,全局配置
+    vscode.ConfigurationTarget.Workspace, // 局部配置
+  );
+}
 export function activate(context: vscode.ExtensionContext) {
+  // recoverColorConfig();
+
   const provider = new ColorsViewProvider(context.extensionUri);
 
   context.subscriptions.push(vscode.window.registerWebviewViewProvider(ColorsViewProvider.viewType, provider));
@@ -19,7 +58,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
 
   private _view?: vscode.WebviewView;
 
-  constructor(private readonly _extensionUri: vscode.Uri) { }
+  constructor(private readonly _extensionUri: vscode.Uri) {}
 
   public resolveWebviewView(
     webviewView: vscode.WebviewView,
@@ -40,35 +79,14 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
     webviewView.webview.onDidReceiveMessage((data) => {
       switch (data.type) {
         case 'colorSelected': {
-          this.setColorForVscodeWindow(data.value);
+          setColorForVscodeWindow(data.value);
+          persistColorConfig(data.value);
+
           // vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`#${data.value}`));
           break;
         }
       }
     });
-  }
-  public async setColorForVscodeWindow(color: string) {
-    console.log('[color]: ', color);
-    const config = vscode.workspace.getConfiguration();
-    await config.update(
-      'workbench.colorCustomizations',
-      {
-        'titleBar.activeBackground': color,
-        "titleBar.activeForeground": setAlpha(getContrastingColor(color),0.3),
-        'titleBar.inactiveBackground': color,
-        'titleBar.inactiveForeground': getContrastingColor(color),
-        'activityBar.background': color,
-        'activityBar.foreground': getContrastingColor(color),
-        'activityBar.inactiveForeground': setAlpha(getContrastingColor(color),0.3),
-        "statusBar.background": color,
-        "statusBar.foreground": getContrastingColor(color),
-        "statusBarItem.hoverBackground": setAlpha(getContrastingColor(color),0.3),
-        "statusBarItem.remoteBackground": color,
-        "statusBarItem.remoteForeground":  getContrastingColor(color),
-      },
-      // vscode.ConfigurationTarget.Global,全局配置
-      vscode.ConfigurationTarget.Workspace,// 局部配置
-    );
   }
 
   // public addColor() {
@@ -77,7 +95,6 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
   //     this._view.webview.postMessage({ type: 'addColor' });
   //   }
   // }
-
 
   private _getHtmlForWebview(webview: vscode.Webview) {
     // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
@@ -172,4 +189,4 @@ function getNonce() {
   return text;
 }
 
-export function deactivate() { }
+export function deactivate() {}
