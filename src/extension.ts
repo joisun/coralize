@@ -38,20 +38,22 @@ async function setColorForVscodeWindow(color: string) {
   );
 }
 export function activate(context: vscode.ExtensionContext) {
-  // recoverColorConfig();
+  recoverColorConfig();
 
   const provider = new ColorsViewProvider(context.extensionUri);
 
   context.subscriptions.push(vscode.window.registerWebviewViewProvider(ColorsViewProvider.viewType, provider));
-  // context.subscriptions.push(
-  //   vscode.commands.registerCommand('catCoding.start', () => {
-  //     // Create and show panel
-  //     const panel = vscode.window.createWebviewPanel('catCoding', 'Cat Coding', vscode.ViewColumn.One, {});
+  // 监听新建窗口事件
+  // context.subscriptions.push(vscode.window.onDidChangeWindowState((e) => {
+  //   if (e.focused && e.window.state.focused) {
+  //     console.log("New window created");
+  //   }
+  // }));
 
-  //     // And set its HTML content
-  //     panel.webview.html = getWebviewContent();
-  //   }),
-  // );
+  // // 监听重新加载窗口事件
+  // context.subscriptions.push(vscode.commands.registerCommand('_extension.reloadWindow', () => {
+  //   console.log("Window reloaded");
+  // }));
 }
 class ColorsViewProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = 'coralize-view';
