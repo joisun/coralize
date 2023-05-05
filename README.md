@@ -2,9 +2,9 @@
 
 customize vcode window color in better way!
 
-### 注意
+## 注意
 
-:warning: 本插件可能会和 Peacock 冲突， 因为 Peacock 的默认颜色配置会覆盖掉本插件的设置。
+本插件可能会和 Peacock 冲突， 因为 Peacock 的默认颜色配置会覆盖掉本插件的设置。
 所以如果你同时安装了 Peacock, 建议将其 默认 color 设为 null.
 具体的：
 
