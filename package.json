@@ -2,7 +2,7 @@
   "name": "coralize",
   "displayName": "coralize",
   "description": "customize the color of vscode window",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "publisher": "sunzhongyi",
   "icon": "resources/coralize.png",
   "engines": {
@@ -15,9 +15,7 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [
-
-    ],
+    "commands": [],
     "viewsContainers": {
       "activitybar": [
         {
