@@ -107,7 +107,7 @@ i {
         #wrapper #colorpicker #foresee #indicator #colorName {
           font-family: 'YuWeiShuFaYunMoFanTi', cursive;
           letter-spacing: 0.2em;
-          font-size: 98px;
+          font-size: 120px;
           font-weight: 500;
           color: #1c2938;
           text-align: center;
@@ -146,7 +146,7 @@ i {
           cursor: pointer;
           position: relative;
           font-family: Arial, Helvetica, sans-serif;
-          opacity: .8;
+          opacity: .6;
           display: flex;
           justify-content: center;
           align-items: center; }
