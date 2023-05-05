@@ -1,4 +1,13 @@
-const colors = [
+// copy hex color
+type Color = {
+  CMYK: number[];
+  RGB: number[];
+  hex: string;
+  name: string;
+  pinyin: string;
+};
+type Colors = Color[];
+const colors: Colors = [
   {
     CMYK: [4, 5, 18, 0],
     RGB: [249, 244, 220],
@@ -3682,3 +3691,130 @@ const colors = [
     pinyin: 'shenhui',
   },
 ];
+
+
+// This script will be run within the webview itself
+// It cannot access the main VS Code APIs directly.
+if (typeof acquireVsCodeApi !== "undefined") {
+  const vscode = acquireVsCodeApi();
+  function onColorClicked(color) {
+    vscode.postMessage({ type: 'colorSelected', value: color });
+  }
+}
+
+
+
+
+trigger();
+
+function trigger() {
+  let node = document.getElementById('color-palette')!;
+  for (let i = 0; i < colors.length; i++) {
+    let ele = document.createElement('div');
+    ele.style.background = colors[i].hex;
+    ele.style.color = colors[i].hex;
+    let textspan = document.createElement('span');
+    let text = document.createTextNode(colors[i].name.substr(0, 2));
+    textspan.style.color = getContrastingColor(colors[i].hex)
+    textspan.title = colors[i].name
+
+    textspan.appendChild(text);
+    ele.append(textspan);
+    // 添加点击事件监听
+    ele.addEventListener('click', function (e) {
+      let copydata = colors[i].hex;
+      // copytext(copydata);
+      // myFunction(copydata);
+      try {
+        onColorClicked(copydata);
+      } catch (e) { }
+      let foreseeE = document.getElementById('wrapper')!;
+      foreseeE.style.backgroundColor = copydata;
+      let searchboxE = document.getElementById('searchbox') as HTMLInputElement;
+      searchboxE.value = copydata;
+      let colorNameE = document.getElementById('colorName')!;
+      colorNameE.style.color = colors[i].hex;
+      colorNameE.innerHTML = colors[i].name;
+      let snackbar = document.getElementById('snackbar')!;
+      snackbar.style.color = colors[i].hex;
+
+      let headE = (document.getElementById('head')!.style.color = colors[i].hex);
+    });
+    ele.classList.add('kid');
+    node.appendChild(ele);
+
+    // 添加锚点
+    let linkarr = ['xingrenhuang', 'dantaohong', 'niluolan', 'meidielv', 'yudubai'];
+    linkarr.map((item) => {
+      if (colors[i].pinyin == item) {
+        let anchor = document.createElement('i');
+        anchor.id = item;
+        node.appendChild(anchor);
+      }
+    });
+  }
+}
+
+const anchors = document.querySelectorAll('a[href^="#"]') as NodeListOf<HTMLAnchorElement>;
+anchors.forEach((anchor) => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    document.querySelector(this.getAttribute('href')!)!.scrollIntoView({
+      behavior: 'smooth',
+    });
+  });
+});
+function copytext(text: string) {
+  let input = document.createElement('textarea');
+  input.innerHTML = text;
+  document.body.appendChild(input);
+  input.select();
+  var result = document.execCommand('copy');
+  document.body.removeChild(input);
+  return result;
+}
+
+// toast
+function myFunction(copydata: string) {
+  var x = document.getElementById('snackbar')!;
+  x.innerHTML = copydata + ' has been copied successfully!';
+  x.className = 'show';
+  setTimeout(function () {
+    x.className = x.className.replace('show', '');
+    x.innerHTML = '';
+  }, 1000);
+}
+
+
+
+// util functions
+function getContrastingColor(backgroundColor: string) {
+  // 将背景颜色转换为RGB值
+  const rgb = hexToRgb(backgroundColor)!;
+
+  // 计算相对亮度
+  const brightness = calculateRelativeBrightness(rgb);
+
+  // 如果亮度小于0.5，则返回白色，否则返回黑色
+  return brightness < 0.5 ? '#fff' : '#000';
+}
+
+// 将十六进制颜色代码转换为RGB格式
+function hexToRgb(hex: string) {
+  const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+  hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result
+    ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16),
+    }
+    : null;
+}
+
+// 计算相对亮度
+function calculateRelativeBrightness(rgb: { r: number, g: number, b: number }) {
+  const { r, g, b } = rgb;
+  return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+}

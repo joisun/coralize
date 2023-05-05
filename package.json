@@ -16,15 +16,7 @@
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
-      {
-        "command": "coralize.helloWorld",
-        "title": "Hello World"
-      },
-      {
-        "command": "catCoding.start",
-        "title": "Start new cat coding session",
-        "category": "Cat Coding"
-      }
+
     ],
     "viewsContainers": {
       "activitybar": [
@@ -63,7 +55,10 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "template:dev": "npm run scss & npm run tsc",
+    "tsc": "tsc --watch  --target es5 ./template/*.ts -outDir ./template/dist",
+    "scss": "scss --watch --no-cache ./template:./template/dist --sourcemap=none"
   },
   "devDependencies": {
     "@types/vscode": "^1.78.0",

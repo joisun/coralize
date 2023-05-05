@@ -17,6 +17,10 @@ a:visited {
   text-decoration: none;
   color: #323232; }
 
+i {
+  width: 0;
+  height: 0; }
+
 #wrapper {
   transition: background-color 1s ease-out;
   display: flex;
@@ -103,7 +107,7 @@ a:visited {
         #wrapper #colorpicker #foresee #indicator #colorName {
           font-family: 'YuWeiShuFaYunMoFanTi', cursive;
           letter-spacing: 0.2em;
-          font-size: 78px;
+          font-size: 98px;
           font-weight: 500;
           color: #1c2938;
           text-align: center;
@@ -125,34 +129,37 @@ a:visited {
         overflow-y: scroll;
         width: 100%;
         height: 100%;
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        padding: 6px;
+        gap: 6px;
         border-radius: 4px;
-        background-color: #00000080;
-        scroll-behavior: smooth !important; }
+        background-color: #00000036;
+        scroll-behavior: smooth !important;
+        overflow-x: hidden; }
         #wrapper #colorpicker #foresee #color-palette .kid {
           line-height: 80px;
           text-align: center;
-          margin: 10px;
-          width: 40px;
-          height: 40px;
+          width: 46px;
+          height: 46px;
           border-radius: 50%;
           cursor: pointer;
           position: relative;
-          margin-bottom: 20px;
           font-family: Arial, Helvetica, sans-serif;
-          opacity: .6; }
+          opacity: .8;
+          display: flex;
+          justify-content: center;
+          align-items: center; }
           #wrapper #colorpicker #foresee #color-palette .kid span {
-            font-size: 10px;
-            position: absolute;
-            bottom: -50px;
-            color: currentColor;
+            font-size: 14px;
+            font-family: 'YuWeiShuFaYunMoFanTi', cursive;
+            letter-spacing: .3em;
+            writing-mode: vertical-rl;
+            /* 竖直排列 */
             word-wrap: normal;
             white-space: nowrap;
-            left: 0;
             text-align: center;
             text-shadow: currentColor 0 0 5px 5px;
-            width: 100%;
             text-shadow: 0 0 #ffffff30; }
 
 /* 滚动条 */
