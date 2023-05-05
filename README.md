@@ -12,4 +12,5 @@ customize vcode window color in better way!
 2. 在搜索栏中输入“Peacock”并在下拉菜单中选择该扩展
 3. 点击“配置”按钮，在弹出的选项卡中找到“peacock.color”字段
 4. 将该字段的值设置为“null”，这将禁用 Peacock 的默认颜色设置
-   3rjgkoyuwtsaffrzyjo4k2espuz6c7v2b2yvhr4ozhd42yfyv6qa
+
+2zjnlbx4lyzhdz2mfzhchmz3dxx2unlqi5jjsdi64tj2mybqraiq
