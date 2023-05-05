@@ -4,7 +4,7 @@
   "description": "customize the color of vscode window",
   "version": "0.0.2",
   "publisher": "sunzhongyi",
-  "icon": "https://raw.githubusercontent.com/jaycethanks/coralize/main/resources/coralize.svg",
+  "icon": "resources/coralize.png",
   "engines": {
     "vscode": "^1.78.0"
   },
