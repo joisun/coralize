@@ -1,13 +1,14 @@
 import * as vscode from 'vscode';
-
 import { getContrastingColor, setAlpha } from './utils/utils';
 
 function recoverColorConfig() {
   // 恢复用户颜色配置,用于解决Peacock 插件的冲突问题
-  // 该方法没啥用， 因为peacock 直接在vscode 的reload生命周期 去恢复了。
   const config = vscode.workspace.getConfiguration();
   const _color = config.get('coralize.color') as string;
-  setColorForVscodeWindow(_color);
+  if(_color){
+    console.log("coralize恢复用户设置！")
+    setColorForVscodeWindow(_color);
+  }
 }
 async function persistColorConfig(color: string) {
   // 持久化coralize 配置到 .vscode/settings.json,该配置字段需要在 package.json 中注册
@@ -38,6 +39,7 @@ async function setColorForVscodeWindow(color: string) {
   );
 }
 export function activate(context: vscode.ExtensionContext) {
+  // activationEvents.onStartupFinished 将会在reload 和 new window 时触发
   recoverColorConfig();
 
   const provider = new ColorsViewProvider(context.extensionUri);
