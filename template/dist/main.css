@@ -91,7 +91,7 @@ i {
       /* width: 50%; */
       /* height: 100vh; */
       padding: 8px 8px 8px 8px;
-      transition: background-color 1s ease-out;
+      transition: background-color .5s ease-out;
       flex-direction: column; }
       #wrapper #colorpicker #foresee #indicator {
         position: absolute;
