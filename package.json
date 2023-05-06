@@ -6,7 +6,7 @@
   "publisher": "sunzhongyi",
   "icon": "resources/coralize.png",
   "engines": {
-    "vscode": "^1.78.0"
+    "vscode": "^1.48.0"
   },
   "repository": "https://github.com/jaycethanks/coralize/tree/main",
   "categories": [
