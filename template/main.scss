@@ -31,7 +31,7 @@ $nav-height: 100px;
 $content-height: calc(100vh - 100px);
 $nav-width: 264px;
 #wrapper {
-  transition: background-color 1s ease-out;
+  transition: background-color .5s ease-out;
 
   display: flex;
   flex-direction: column;
@@ -184,7 +184,7 @@ $nav-width: 264px;
         gap: 6px;
         border-radius: 4px;
         background-color: #00000036;
-        scroll-behavior: smooth !important;
+        scroll-behavior: smooth;
         overflow-x: hidden;
         .kid {
           line-height: 80px;

@@ -3690,10 +3690,14 @@ if (typeof acquireVsCodeApi !== "undefined") {
         vscode_1.postMessage({ type: 'colorSelected', value: color });
     }
 }
-trigger();
-function trigger() {
+var searchboxE = document.getElementById('searchbox');
+var colorNameE = document.getElementById('colorName');
+var foreseeE = document.getElementById('wrapper');
+init();
+function init() {
     var node = document.getElementById('color-palette');
     var _loop_1 = function (i) {
+        // 创建色彩小圆
         var ele = document.createElement('div');
         ele.style.background = colors[i].hex;
         ele.style.color = colors[i].hex;
@@ -3709,40 +3713,35 @@ function trigger() {
             // copytext(copydata);
             // myFunction(copydata);
             try {
-                onColorClicked(copydata);
+                onColorClicked(copydata); //postMessage to vscode
             }
             catch (e) { }
-            setCurrentColor(copydata);
-            var snackbar = document.getElementById('snackbar');
-            snackbar.style.color = colors[i].hex;
-            var headE = (document.getElementById('head').style.color = colors[i].hex);
+            setCurrentColor(copydata, false);
+            // let snackbar = document.getElementById('snackbar')!;
+            // snackbar.style.color = colors[i].hex;
+            // let headE = (document.getElementById('head')!.style.color = colors[i].hex);
         });
         ele.classList.add('kid');
         ele.id = colors[i].pinyin;
         node.appendChild(ele);
-        // 添加锚点
-        var linkarr = ['xingrenhuang', 'dantaohong', 'niluolan', 'meidielv', 'yudubai'];
-        linkarr.map(function (item) {
-            if (colors[i].pinyin == item) {
-                var anchor = document.createElement('i');
-                anchor.id = item;
-                node.appendChild(anchor);
-            }
-        });
     };
     for (var i = 0; i < colors.length; i++) {
         _loop_1(i);
     }
 }
+// 监听锚点
 var anchors = document.querySelectorAll('a[href^="#"]');
 anchors.forEach(function (anchor) {
     anchor.addEventListener('click', function (e) {
         e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth',
+        var targetId = this.getAttribute('href').replace("#", "");
+        document.getElementById(targetId).scrollIntoView({
+            behavior: 'smooth', //在 vscode webview 中无效, smooth 效果通过 css 设置了
         });
     });
 });
+//!! duplicate
+// copy color to clipboard
 function copytext(text) {
     var input = document.createElement('textarea');
     input.innerHTML = text;
@@ -3752,6 +3751,7 @@ function copytext(text) {
     document.body.removeChild(input);
     return result;
 }
+//!! duplicate
 // toast
 function myFunction(copydata) {
     var x = document.getElementById('snackbar');
@@ -3763,42 +3763,39 @@ function myFunction(copydata) {
     }, 1000);
 }
 // 监听 message
-var counter = document.getElementById('lines-of-code-counter');
 window.addEventListener('message', function (event) {
     // 处理接收到的消息
     var _a = event.data, type = _a.type, value = _a.value;
-    console.log('type,value', type, value);
-    counter.textContent = value;
     switch (type) {
         case 'syncCoralizeState': {
-            counter.textContent = value;
-            setCurrentColor(value);
+            setCurrentColor(value, true);
             // vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`#${data.value}`));
             break;
         }
     }
 });
-var searchboxE = document.getElementById('searchbox');
-var colorNameE = document.getElementById('colorName');
-var foreseeE = document.getElementById('wrapper');
-function setCurrentColor(color) {
+function setCurrentColor(color, scroll) {
     var findColorItem = colors.find(function (_color) { return _color.hex === color; });
     var _a = findColorItem, hex = _a.hex, name = _a.name, pinyin = _a.pinyin;
     colorNameE.style.color = color;
     searchboxE.value = color;
     colorNameE.innerHTML = name;
     foreseeE.style.backgroundColor = color;
-    scrollTo(pinyin);
+    scroll && scrollTo(pinyin);
 }
-function scrollTo(pinyin) {
+var colorPalette = document.getElementById("color-palette");
+function scrollTo(pinyin, smooth) {
+    if (smooth === void 0) { smooth = false; }
     var kids = document.querySelectorAll(".kid");
     var _kids = Array.from(kids);
     var targetKid = _kids.find(function (kid) { return kid.id === pinyin; });
     if (targetKid) {
+        (!smooth) && (colorPalette.style.scrollBehavior = "auto");
         targetKid.scrollIntoView({
             behavior: "instant",
         });
     }
+    colorPalette.style.scrollBehavior = "smooth";
 }
 // util functions
 function getContrastingColor(backgroundColor) {

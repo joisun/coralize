@@ -22,7 +22,7 @@ i {
   height: 0; }
 
 #wrapper {
-  transition: background-color 1s ease-out;
+  transition: background-color .5s ease-out;
   display: flex;
   flex-direction: column;
   max-width: 264px;
@@ -135,7 +135,7 @@ i {
         gap: 6px;
         border-radius: 4px;
         background-color: #00000036;
-        scroll-behavior: smooth !important;
+        scroll-behavior: smooth;
         overflow-x: hidden; }
         #wrapper #colorpicker #foresee #color-palette .kid {
           line-height: 80px;

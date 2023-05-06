@@ -158,11 +158,11 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
     <title>coralize-html</title>
   </head>
   <body>
-    <dic id="wrapper">
+    <div id="wrapper">
       <div id="colorpicker">
         <div id="nav">
           <div id="search">
-            <input id="searchbox" type="text" placeholder="过滤" value="#1c2938" />
+            <input id="searchbox" type="text"  value="#1c2938" />
           </div>
           <div id="link">
             <a href="#xingrenhuang">
@@ -175,6 +175,11 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
                 <!-- 桃红 -->
               </div>
             </a>
+            <a href="#xidanhong">
+              <div style="background-color: rgb(236, 44, 100)">
+                <!-- 喜蛋红 -->
+              </div>
+            </a>            
             <a href="#niluolan">
               <div style="background-color: rgb(36, 116, 181)">
                 <!-- 尼罗蓝 -->
@@ -192,8 +197,6 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
             </a>
           </div>
         </div>
-        <input id="searchbox" type="text" placeholder="过滤" value="#1c2938" />
-
         <div id="foresee">
           <div id="indicator">
             <p id="colorName">鸽蓝</p>
@@ -203,7 +206,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
           <div id="color-palette"></div>
         </div>
       </div>
-    </dic>
+    </div>
 
 		<script nonce="${nonce}" src="${scriptUri}"></script>
 

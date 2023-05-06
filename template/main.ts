@@ -3701,15 +3701,19 @@ if (typeof acquireVsCodeApi !== "undefined") {
     vscode.postMessage({ type: 'colorSelected', value: color });
   }
 }
+const searchboxE = document.getElementById('searchbox') as HTMLInputElement;
+const colorNameE = document.getElementById('colorName')!;
+const foreseeE = document.getElementById('wrapper')!;
 
 
 
+init();
 
-trigger();
-
-function trigger() {
+function init() {
   let node = document.getElementById('color-palette')!;
   for (let i = 0; i < colors.length; i++) {
+
+    // 创建色彩小圆
     let ele = document.createElement('div');
     ele.style.background = colors[i].hex;
     ele.style.color = colors[i].hex;
@@ -3717,48 +3721,49 @@ function trigger() {
     let text = document.createTextNode(colors[i].name.substr(0, 2));
     textspan.style.color = getContrastingColor(colors[i].hex)
     textspan.title = colors[i].name
-
     textspan.appendChild(text);
     ele.append(textspan);
+
     // 添加点击事件监听
     ele.addEventListener('click', function (e) {
       let copydata = colors[i].hex;
       // copytext(copydata);
       // myFunction(copydata);
       try {
-        onColorClicked(copydata);
+        onColorClicked(copydata);//postMessage to vscode
       } catch (e) { }
-      setCurrentColor(copydata)
-      let snackbar = document.getElementById('snackbar')!;
-      snackbar.style.color = colors[i].hex;
-
-      let headE = (document.getElementById('head')!.style.color = colors[i].hex);
+      setCurrentColor(copydata,false)
+      // let snackbar = document.getElementById('snackbar')!;
+      // snackbar.style.color = colors[i].hex;
+      // let headE = (document.getElementById('head')!.style.color = colors[i].hex);
     });
     ele.classList.add('kid');
     ele.id = colors[i].pinyin;
     node.appendChild(ele);
 
-    // 添加锚点
-    let linkarr = ['xingrenhuang', 'dantaohong', 'niluolan', 'meidielv', 'yudubai'];
-    linkarr.map((item) => {
-      if (colors[i].pinyin == item) {
-        let anchor = document.createElement('i');
-        anchor.id = item;
-        node.appendChild(anchor);
-      }
-    });
+
   }
+
+  
 }
 
+
+// 监听锚点
 const anchors = document.querySelectorAll('a[href^="#"]') as NodeListOf<HTMLAnchorElement>;
+
 anchors.forEach((anchor) => {
   anchor.addEventListener('click', function (e) {
     e.preventDefault();
-    document.querySelector(this.getAttribute('href')!)!.scrollIntoView({
-      behavior: 'smooth',
+    const targetId = this.getAttribute('href')!.replace("#","");
+    document.getElementById(targetId)!.scrollIntoView({
+      behavior: 'smooth',//在 vscode webview 中无效, smooth 效果通过 css 设置了
     });
   });
 });
+
+
+//!! duplicate
+// copy color to clipboard
 function copytext(text: string) {
   let input = document.createElement('textarea');
   input.innerHTML = text;
@@ -3769,6 +3774,7 @@ function copytext(text: string) {
   return result;
 }
 
+//!! duplicate
 // toast
 function myFunction(copydata: string) {
   var x = document.getElementById('snackbar')!;
@@ -3783,49 +3789,44 @@ function myFunction(copydata: string) {
 
 
 // 监听 message
-const counter = document.getElementById('lines-of-code-counter') as HTMLElement
 
 window.addEventListener('message', function(event) {
   // 处理接收到的消息
- 
-
   const {type,value} = event.data
-  console.log('type,value',type,value)
-  counter.textContent = value;
-
   switch (type) {
     case 'syncCoralizeState': {
-      counter.textContent = value;
-      setCurrentColor(value)
-
+      setCurrentColor(value,true)
       // vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`#${data.value}`));
       break;
     }
   }
 });
 
-const searchboxE = document.getElementById('searchbox') as HTMLInputElement;
-const colorNameE = document.getElementById('colorName')!;
-const foreseeE = document.getElementById('wrapper')!;
-function setCurrentColor(color:string){
+
+function setCurrentColor(color:string,scroll:boolean){
   const findColorItem = colors.find(_color=>_color.hex === color)
   const {hex,name,pinyin} = findColorItem as Color
   colorNameE.style.color = color;
   searchboxE.value = color;
   colorNameE.innerHTML = name;
   foreseeE.style.backgroundColor = color
-  scrollTo(pinyin)
+  scroll && scrollTo(pinyin)
+
 }
 
-function scrollTo(pinyin){
+const colorPalette = document.getElementById("color-palette")!
+function scrollTo(pinyin:string,smooth:boolean=false){
   const kids = document.querySelectorAll(".kid") as NodeListOf<HTMLDivElement>
   const _kids = Array.from(kids)
   const targetKid = _kids.find(kid=>kid.id === pinyin)
   if(targetKid){
+    (!smooth) && (colorPalette.style.scrollBehavior = "auto")
     targetKid.scrollIntoView({
         behavior: "instant",
       });
     }
+    colorPalette.style.scrollBehavior = "smooth"
+
 }
 
 
