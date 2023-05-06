@@ -3728,19 +3728,14 @@ function trigger() {
       try {
         onColorClicked(copydata);
       } catch (e) { }
-      let foreseeE = document.getElementById('wrapper')!;
-      foreseeE.style.backgroundColor = copydata;
-      let searchboxE = document.getElementById('searchbox') as HTMLInputElement;
-      searchboxE.value = copydata;
-      let colorNameE = document.getElementById('colorName')!;
-      colorNameE.style.color = colors[i].hex;
-      colorNameE.innerHTML = colors[i].name;
+      setCurrentColor(copydata)
       let snackbar = document.getElementById('snackbar')!;
       snackbar.style.color = colors[i].hex;
 
       let headE = (document.getElementById('head')!.style.color = colors[i].hex);
     });
     ele.classList.add('kid');
+    ele.id = colors[i].pinyin;
     node.appendChild(ele);
 
     // 添加锚点
@@ -3785,6 +3780,53 @@ function myFunction(copydata: string) {
   }, 1000);
 }
 
+
+
+// 监听 message
+const counter = document.getElementById('lines-of-code-counter') as HTMLElement
+
+window.addEventListener('message', function(event) {
+  // 处理接收到的消息
+ 
+
+  const {type,value} = event.data
+  console.log('type,value',type,value)
+  counter.textContent = value;
+
+  switch (type) {
+    case 'syncCoralizeState': {
+      counter.textContent = value;
+      setCurrentColor(value)
+
+      // vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`#${data.value}`));
+      break;
+    }
+  }
+});
+
+const searchboxE = document.getElementById('searchbox') as HTMLInputElement;
+const colorNameE = document.getElementById('colorName')!;
+const foreseeE = document.getElementById('wrapper')!;
+function setCurrentColor(color:string){
+  const findColorItem = colors.find(_color=>_color.hex === color)
+  const {hex,name,pinyin} = findColorItem as Color
+  colorNameE.style.color = color;
+  searchboxE.value = color;
+  colorNameE.innerHTML = name;
+  foreseeE.style.backgroundColor = color
+  scrollTo(pinyin)
+}
+
+function scrollTo(pinyin){
+  const kids = document.querySelectorAll(".kid") as NodeListOf<HTMLDivElement>
+  const _kids = Array.from(kids)
+  const targetKid = _kids.find(kid=>kid.id === pinyin)
+  if(targetKid){
+    targetKid.scrollIntoView({
+        behavior: "instant",
+      });
+    }
+}
 
 
 // util functions

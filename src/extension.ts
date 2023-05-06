@@ -9,7 +9,9 @@ function recoverColorConfig() {
     console.log("coralize恢复用户设置！")
     setColorForVscodeWindow(_color);
   }
+  return _color
 }
+
 async function persistColorConfig(color: string) {
   // 持久化coralize 配置到 .vscode/settings.json,该配置字段需要在 package.json 中注册
   // https://code.visualstudio.com/api/extension-capabilities/common-capabilities#configuration
@@ -40,9 +42,9 @@ async function setColorForVscodeWindow(color: string) {
 }
 export function activate(context: vscode.ExtensionContext) {
   // activationEvents.onStartupFinished 将会在reload 和 new window 时触发
-  recoverColorConfig();
+  const userColor = recoverColorConfig();
 
-  const provider = new ColorsViewProvider(context.extensionUri);
+  const provider = new ColorsViewProvider(context.extensionUri,userColor);
 
   context.subscriptions.push(vscode.window.registerWebviewViewProvider(ColorsViewProvider.viewType, provider));
   // 监听新建窗口事件
@@ -62,7 +64,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
 
   private _view?: vscode.WebviewView;
 
-  constructor(private readonly _extensionUri: vscode.Uri) {}
+  constructor(private readonly _extensionUri: vscode.Uri,private userColor?: string) {}
 
   public resolveWebviewView(
     webviewView: vscode.WebviewView,
@@ -70,6 +72,11 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
     _token: vscode.CancellationToken,
   ) {
     this._view = webviewView;
+
+
+
+
+
 
     webviewView.webview.options = {
       // Allow scripts in the webview
@@ -79,6 +86,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
     };
 
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+    // webviewView.webview.postMessage("hello");
 
     webviewView.webview.onDidReceiveMessage((data) => {
       switch (data.type) {
@@ -91,6 +99,26 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
         }
       }
     });
+
+    // 同步用户设置颜色到 coralize webview, 一定要在 _getHtmlForWebview() 之后执行
+    console.log('this.userColor',this.userColor)
+    let _view = this._view;
+
+    // 该方法仅会在首次触发以后再触发， 用户首次渲染coralize 的时候不会执行
+    webviewView.onDidChangeVisibility(visible => {
+      if(this.userColor){
+        _view.webview.postMessage({type:"syncCoralizeState",value: this.userColor});
+
+      }
+    });
+
+    
+    // 没有找到 类似 loaded 或者 mounted 的方法
+    if(this.userColor){
+      setTimeout(() => {  
+        _view.webview.postMessage({type:"syncCoralizeState",value: this.userColor});
+      }, 800);
+    }
   }
 
   // public addColor() {
@@ -99,6 +127,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
   //     this._view.webview.postMessage({ type: 'addColor' });
   //   }
   // }
+
 
   private _getHtmlForWebview(webview: vscode.Webview) {
     // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
@@ -163,6 +192,8 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
             </a>
           </div>
         </div>
+        <input id="searchbox" type="text" placeholder="过滤" value="#1c2938" />
+
         <div id="foresee">
           <div id="indicator">
             <p id="colorName">鸽蓝</p>
@@ -174,7 +205,8 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
       </div>
     </dic>
 
-		<script src="${scriptUri}"></script>
+		<script nonce="${nonce}" src="${scriptUri}"></script>
+
 
   </body>
 </html>

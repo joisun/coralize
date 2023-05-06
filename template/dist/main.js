@@ -3712,18 +3712,13 @@ function trigger() {
                 onColorClicked(copydata);
             }
             catch (e) { }
-            var foreseeE = document.getElementById('wrapper');
-            foreseeE.style.backgroundColor = copydata;
-            var searchboxE = document.getElementById('searchbox');
-            searchboxE.value = copydata;
-            var colorNameE = document.getElementById('colorName');
-            colorNameE.style.color = colors[i].hex;
-            colorNameE.innerHTML = colors[i].name;
+            setCurrentColor(copydata);
             var snackbar = document.getElementById('snackbar');
             snackbar.style.color = colors[i].hex;
             var headE = (document.getElementById('head').style.color = colors[i].hex);
         });
         ele.classList.add('kid');
+        ele.id = colors[i].pinyin;
         node.appendChild(ele);
         // 添加锚点
         var linkarr = ['xingrenhuang', 'dantaohong', 'niluolan', 'meidielv', 'yudubai'];
@@ -3766,6 +3761,44 @@ function myFunction(copydata) {
         x.className = x.className.replace('show', '');
         x.innerHTML = '';
     }, 1000);
+}
+// 监听 message
+var counter = document.getElementById('lines-of-code-counter');
+window.addEventListener('message', function (event) {
+    // 处理接收到的消息
+    var _a = event.data, type = _a.type, value = _a.value;
+    console.log('type,value', type, value);
+    counter.textContent = value;
+    switch (type) {
+        case 'syncCoralizeState': {
+            counter.textContent = value;
+            setCurrentColor(value);
+            // vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`#${data.value}`));
+            break;
+        }
+    }
+});
+var searchboxE = document.getElementById('searchbox');
+var colorNameE = document.getElementById('colorName');
+var foreseeE = document.getElementById('wrapper');
+function setCurrentColor(color) {
+    var findColorItem = colors.find(function (_color) { return _color.hex === color; });
+    var _a = findColorItem, hex = _a.hex, name = _a.name, pinyin = _a.pinyin;
+    colorNameE.style.color = color;
+    searchboxE.value = color;
+    colorNameE.innerHTML = name;
+    foreseeE.style.backgroundColor = color;
+    scrollTo(pinyin);
+}
+function scrollTo(pinyin) {
+    var kids = document.querySelectorAll(".kid");
+    var _kids = Array.from(kids);
+    var targetKid = _kids.find(function (kid) { return kid.id === pinyin; });
+    if (targetKid) {
+        targetKid.scrollIntoView({
+            behavior: "instant",
+        });
+    }
 }
 // util functions
 function getContrastingColor(backgroundColor) {
