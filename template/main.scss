@@ -20,7 +20,7 @@ a:visited {
   text-decoration: none;
   color: #323232;
 }
-i{
+i {
   width: 0;
   height: 0;
   // position: absolute;
@@ -31,7 +31,7 @@ $nav-height: 100px;
 $content-height: calc(100vh - 100px);
 $nav-width: 264px;
 #wrapper {
-  transition: background-color .5s ease-out;
+  transition: background-color 0.5s ease-out;
 
   display: flex;
   flex-direction: column;
@@ -73,16 +73,41 @@ $nav-width: 264px;
           // flex: 1;
           div {
             // margin: 4px 4px 4px 0;
-            width: 30px;
+            width: 28px;
+            height: 28px;
             word-wrap: normal;
             white-space: nowrap;
-            height: 30px;
             border-radius: 4px;
             line-height: 40px;
             text-align: center;
             // margin: 5px;
             font-size: 14px;
           }
+        }
+        #button {
+          user-select: none;
+          cursor: pointer;
+          color: rgb(255, 255, 255);
+          padding: 2px;
+          // filter: invert(100%);
+          transition: all 0.3s;
+
+          :hover{
+            transform: translateY(-1px);
+
+          }
+          svg {
+            transition: all 0.3s;
+          }
+          svg.active {
+            // transform: rotate(360deg);
+            animation: shake 3s;
+
+          }
+
+          // svg{
+          //   fill: red
+          // };
         }
       }
       #search {
@@ -96,9 +121,12 @@ $nav-width: 264px;
         align-items: center;
         padding: 4px;
         // width: 100%;
-        input {
+        input,input:disabled {
           box-sizing: border-box;
           width: 100%;
+          // filter: invert(100%);
+          color: rgb(28, 41, 56);
+          background-color: rgba(255, 255, 255, 0.7);
           // margin: 4px;
           // height: 30px;
           // border: 5px solid #00000099;
@@ -106,7 +134,7 @@ $nav-width: 264px;
           border-radius: 5px;
           font-size: 24px;
           padding: 2px 4px;
-          margin-top: .8rem;
+          margin-top: 0.8rem;
           &:focus {
             color: lightseagreen;
           }
@@ -126,7 +154,7 @@ $nav-width: 264px;
 
       padding: 8px 8px 8px 8px;
       // background-color: #141e1b;
-      transition: background-color .5s ease-out;
+      transition: background-color 0.5s ease-out;
 
       // position: relative;
       flex-direction: column;
@@ -134,7 +162,7 @@ $nav-width: 264px;
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%,-50%);
+        transform: translate(-50%, -50%);
         // display: flex;
         word-wrap: normal;
         white-space: nowrap;
@@ -145,7 +173,7 @@ $nav-width: 264px;
           text-align: center;
         }
         #colorName {
-          font-family: 'YuWeiShuFaYunMoFanTi', cursive;
+          font-family: "YuWeiShuFaYunMoFanTi", cursive;
           letter-spacing: 0.2em;
           font-size: 120px;
           font-weight: 500;
@@ -153,7 +181,7 @@ $nav-width: 264px;
           text-align: center;
           writing-mode: vertical-rl; /* 竖直排列 */
           text-orientation: mixed; /* 混合方向，可以保持文字的水平方向 */
-          
+
           filter: invert(100%);
         }
       }
@@ -197,16 +225,16 @@ $nav-width: 264px;
           position: relative;
           // margin-bottom: 20px;
           font-family: Arial, Helvetica, sans-serif;
-          opacity: .6;
+          opacity: 0.6;
           display: flex;
           justify-content: center;
           align-items: center;
           // background:radial-gradient(currentColor,transparent);
           span {
             font-size: 14px;
-            font-family: 'YuWeiShuFaYunMoFanTi', cursive;
-            
-            letter-spacing: .3em;
+            font-family: "YuWeiShuFaYunMoFanTi", cursive;
+
+            letter-spacing: 0.3em;
             writing-mode: vertical-rl; /* 竖直排列 */
             // filter: invert(100%);
             // position: absolute;
@@ -313,5 +341,159 @@ $nav-width: 264px;
   to {
     // bottom: 0;
     opacity: 0;
+  }
+}
+
+@keyframes shake {
+  2% {
+    transform: translate(0, 0) rotate(-6.5deg);
+  }
+  4% {
+    transform: translate(0, 0) rotate(3.5deg);
+  }
+  6% {
+    transform: translate(0, 0) rotate(4.5deg);
+  }
+  8% {
+    transform: translate(0, 0) rotate(-1.5deg);
+  }
+  10% {
+    transform: translate(0, 0) rotate(-4.5deg);
+  }
+  12% {
+    transform: translate(0, 0) rotate(-0.5deg);
+  }
+  14% {
+    transform: translate(0, 0) rotate(-5.5deg);
+  }
+  16% {
+    transform: translate(0, 0) rotate(-2.5deg);
+  }
+  18% {
+    transform: translate(0, 0) rotate(7.5deg);
+  }
+  20% {
+    transform: translate(0, 0) rotate(-4.5deg);
+  }
+  22% {
+    transform: translate(0, 0) rotate(2.5deg);
+  }
+  24% {
+    transform: translate(0, 0) rotate(2.5deg);
+  }
+  26% {
+    transform: translate(0, 0) rotate(2.5deg);
+  }
+  28% {
+    transform: translate(0, 0) rotate(-4.5deg);
+  }
+  30% {
+    transform: translate(0, 0) rotate(4.5deg);
+  }
+  32% {
+    transform: translate(0, 0) rotate(2.5deg);
+  }
+  34% {
+    transform: translate(0, 0) rotate(4.5deg);
+  }
+  36% {
+    transform: translate(0, 0) rotate(1.5deg);
+  }
+  38% {
+    transform: translate(0, 0) rotate(-2.5deg);
+  }
+  40% {
+    transform: translate(0, 0) rotate(0.5deg);
+  }
+  42% {
+    transform: translate(0, 0) rotate(2.5deg);
+  }
+  44% {
+    transform: translate(0, 0) rotate(-5.5deg);
+  }
+  46% {
+    transform: translate(0, 0) rotate(5.5deg);
+  }
+  48% {
+    transform: translate(0, 0) rotate(7.5deg);
+  }
+  50% {
+    transform: translate(0, 0) rotate(0.5deg);
+  }
+  52% {
+    transform: translate(0, 0) rotate(-0.5deg);
+  }
+  54% {
+    transform: translate(0, 0) rotate(-2.5deg);
+  }
+  56% {
+    transform: translate(0, 0) rotate(5.5deg);
+  }
+  58% {
+    transform: translate(0, 0) rotate(-5.5deg);
+  }
+  60% {
+    transform: translate(0, 0) rotate(-3.5deg);
+  }
+  62% {
+    transform: translate(0, 0) rotate(5.5deg);
+  }
+  64% {
+    transform: translate(0, 0) rotate(-3.5deg);
+  }
+  66% {
+    transform: translate(0, 0) rotate(5.5deg);
+  }
+  68% {
+    transform: translate(0, 0) rotate(7.5deg);
+  }
+  70% {
+    transform: translate(0, 0) rotate(-2.5deg);
+  }
+  72% {
+    transform: translate(0, 0) rotate(0.5deg);
+  }
+  74% {
+    transform: translate(0, 0) rotate(-1.5deg);
+  }
+  76% {
+    transform: translate(0, 0) rotate(2.5deg);
+  }
+  78% {
+    transform: translate(0, 0) rotate(6.5deg);
+  }
+  80% {
+    transform: translate(0, 0) rotate(4.5deg);
+  }
+  82% {
+    transform: translate(0, 0) rotate(-3.5deg);
+  }
+  84% {
+    transform: translate(0, 0) rotate(3.5deg);
+  }
+  86% {
+    transform: translate(0, 0) rotate(-2.5deg);
+  }
+  88% {
+    transform: translate(0, 0) rotate(-5.5deg);
+  }
+  90% {
+    transform: translate(0, 0) rotate(4.5deg);
+  }
+  92% {
+    transform: translate(0, 0) rotate(-3.5deg);
+  }
+  94% {
+    transform: translate(0, 0) rotate(7.5deg);
+  }
+  96% {
+    transform: translate(0, 0) rotate(-2.5deg);
+  }
+  98% {
+    transform: translate(0, 0) rotate(-6.5deg);
+  }
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0);
   }
 }

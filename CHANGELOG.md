@@ -6,6 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.3.0] - Sun May 07 2023
+### Added
+- 新增随机深色按钮
+- UI 细节优化
 
 ## [0.2.2] - Sun May 07 2023
 

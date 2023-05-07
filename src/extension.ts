@@ -3,13 +3,18 @@ import { getContrastingColor, setAlpha } from "./utils/utils";
 
 function recoverColorConfig() {
   // 根据用户 .vscode/settings.json.coralize.color，还原设定
-  // TODO: 设置用户默认颜色，
-  // await config.update('coralize.default', [1,2,3], vscode.ConfigurationTarget.Global);
   const _settingColor = getSettingColor();
   if (_settingColor) {
     console.log("coralize恢复用户设置！");
     setColorForVscodeWindow(_settingColor);
   }
+}
+
+function setRandomColorsConfig(){
+    // TODO: 设置用户默认颜色，
+
+    
+  // await config.update('coralize.default', [1,2,3], vscode.ConfigurationTarget.Global);
 }
 
 function getSettingColor() {
@@ -55,6 +60,8 @@ async function setColorForVscodeWindow(color: string) {
     // vscode.ConfigurationTarget.Global,全局配置
     vscode.ConfigurationTarget.Workspace // 局部配置
   );
+  persistColorConfig(color);
+
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -99,7 +106,6 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
         case "colorSelected": {
           // 用户选中颜色 handler
           setColorForVscodeWindow(data.value);
-          persistColorConfig(data.value);
           // vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`#${data.value}`));
           break;
         }

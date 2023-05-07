@@ -3686,6 +3686,9 @@ var colors = [
 // It cannot access the main VS Code APIs directly.
 if (typeof acquireVsCodeApi !== "undefined") {
     var vscode_1 = acquireVsCodeApi();
+    // const config = vscode.workspace.getConfiguration();
+    // const color =  config.get("coralize.default");
+    // console.log('color',color)
     function onColorClicked(color) {
         vscode_1.postMessage({ type: 'colorSelected', value: color });
     }
@@ -3693,6 +3696,7 @@ if (typeof acquireVsCodeApi !== "undefined") {
 var searchboxE = document.getElementById('searchbox');
 var colorNameE = document.getElementById('colorName');
 var foreseeE = document.getElementById('wrapper');
+var button = document.getElementById("button");
 init();
 function init() {
     var node = document.getElementById('color-palette');
@@ -3774,13 +3778,31 @@ window.addEventListener('message', function (event) {
         }
     }
 });
+// 监听button
+var defaultSet = [
+    "#15231b", "#141e1b", "#21373d", "#101f30", "#131824", "#0f1423", "#1f2040", "#1c0d1a", "#310f1b", "#4c1f24", "#503e2a", "#4a4035"
+];
+button === null || button === void 0 ? void 0 : button.addEventListener("click", function () {
+    console.log("clicked");
+    var svg = button.querySelector("svg");
+    svg === null || svg === void 0 ? void 0 : svg.classList.add("active");
+    var index = Math.floor(Math.random() * defaultSet.length);
+    setCurrentColor(defaultSet[index], true);
+    setTimeout(function () {
+        svg === null || svg === void 0 ? void 0 : svg.classList.remove("active");
+    }, 300);
+});
 function setCurrentColor(color, scroll) {
     var findColorItem = colors.find(function (_color) { return _color.hex === color; });
     var _a = findColorItem, hex = _a.hex, name = _a.name, pinyin = _a.pinyin;
     colorNameE.style.color = color;
     searchboxE.value = color;
+    searchboxE.style.color = color;
+    searchboxE.style.backgroundColor = setAlpha(getContrastingColor(color), .7);
     colorNameE.innerHTML = name;
     foreseeE.style.backgroundColor = color;
+    // button!.style.color = color;
+    button.style.color = getContrastingColor(color);
     scroll && scrollTo(pinyin);
 }
 var colorPalette = document.getElementById("color-palette");
@@ -3823,4 +3845,21 @@ function hexToRgb(hex) {
 function calculateRelativeBrightness(rgb) {
     var r = rgb.r, g = rgb.g, b = rgb.b;
     return (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+}
+function rgbaToHex(r, g, b, a) {
+    if (a === void 0) { a = 1; }
+    // 将 r、g、b 值转换为 16 进制字符串并填充到两位
+    var rHex = r.toString(16).padStart(2, '0');
+    var gHex = g.toString(16).padStart(2, '0');
+    var bHex = b.toString(16).padStart(2, '0');
+    // 将 alpha 值乘以 255 并转换为 16 进制字符串，并去掉前导零
+    var aHex = Math.round(a * 255)
+        .toString(16)
+        .toUpperCase();
+    // 返回完整的 hex 颜色码
+    return "#".concat(rHex).concat(gHex).concat(bHex).concat(aHex);
+}
+function setAlpha(color, alpha) {
+    var _a = hexToRgb(color), r = _a.r, g = _a.g, b = _a.b;
+    return rgbaToHex(r, g, b, alpha);
 }
