@@ -139,6 +139,15 @@ export function activate(context: vscode.ExtensionContext) {
       provider
     )
   );
+
+  // 处理设置变化
+  vscode.workspace.onDidChangeConfiguration(event => {
+    if (event.affectsConfiguration('coralize.applyToTitleBar') || event.affectsConfiguration('coralize.applyToSideBar') || event.affectsConfiguration('coralize.applyToStatusBar')) {
+      // console.log("effedcted")
+      // 当用户修改了 Coralize 的配置，更新设定
+      recoverColorConfig();
+    }
+  });
 }
 class ColorsViewProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = "coralize-view";

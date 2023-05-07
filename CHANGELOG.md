@@ -5,6 +5,11 @@ All notable changes to the "coralize" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 
+## [1.0.1] - Sun May 07 2023
+
+### Fixed
+- 当用户修改设置时实时更新
+
 ## [1.0.0] - Sun May 07 2023
 ### Added 
 - 支持自定义指定 Coralize 将影响的部分
