@@ -2,7 +2,7 @@
   "name": "coralize",
   "displayName": "coralize",
   "description": "customize the color of vscode window",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "publisher": "sunzhongyi",
   "icon": "resources/coralize.png",
   "engines": {
