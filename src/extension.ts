@@ -1,82 +1,88 @@
-import * as vscode from 'vscode';
-import { getContrastingColor, setAlpha } from './utils/utils';
+import * as vscode from "vscode";
+import { getContrastingColor, setAlpha } from "./utils/utils";
 
 function recoverColorConfig() {
-  // 恢复用户颜色配置,用于解决Peacock 插件的冲突问题
-  const config = vscode.workspace.getConfiguration();
-  const _color = config.get('coralize.color') as string;
-  if(_color){
-    console.log("coralize恢复用户设置！")
-    setColorForVscodeWindow(_color);
+  // 根据用户 .vscode/settings.json.coralize.color，还原设定
+  // TODO: 设置用户默认颜色，
+  // await config.update('coralize.default', [1,2,3], vscode.ConfigurationTarget.Global);
+  const _settingColor = getSettingColor();
+  if (_settingColor) {
+    console.log("coralize恢复用户设置！");
+    setColorForVscodeWindow(_settingColor);
   }
-  return _color
+}
+
+function getSettingColor() {
+  const config = vscode.workspace.getConfiguration();
+  return config.get("coralize.color") as string;
 }
 
 async function persistColorConfig(color: string) {
   // 持久化coralize 配置到 .vscode/settings.json,该配置字段需要在 package.json 中注册
   // https://code.visualstudio.com/api/extension-capabilities/common-capabilities#configuration
   const config = vscode.workspace.getConfiguration();
-  await config.update('coralize.color', color, vscode.ConfigurationTarget.Workspace);
+  await config.update(
+    "coralize.color",
+    color,
+    vscode.ConfigurationTarget.Workspace
+  );
 }
+
 async function setColorForVscodeWindow(color: string) {
   const config = vscode.workspace.getConfiguration();
   await config.update(
-    'workbench.colorCustomizations',
+    "workbench.colorCustomizations",
     {
-      'titleBar.activeBackground': color,
-      'titleBar.activeForeground': getContrastingColor(color),
-      'titleBar.inactiveBackground': color,
-      'titleBar.inactiveForeground': getContrastingColor(color),
-      'activityBar.background': color,
-      'activityBar.foreground': getContrastingColor(color),
-      'activityBar.inactiveForeground': setAlpha(getContrastingColor(color), 0.3),
-      'statusBar.background': color,
-      'statusBar.foreground': getContrastingColor(color),
-      'statusBarItem.hoverBackground': setAlpha(getContrastingColor(color), 0.3),
-      'statusBarItem.remoteBackground': color,
-      'statusBarItem.remoteForeground': getContrastingColor(color),
+      "titleBar.activeBackground": color,
+      "titleBar.activeForeground": getContrastingColor(color),
+      "titleBar.inactiveBackground": color,
+      "titleBar.inactiveForeground": getContrastingColor(color),
+      "activityBar.background": color,
+      "activityBar.foreground": getContrastingColor(color),
+      "activityBar.inactiveForeground": setAlpha(
+        getContrastingColor(color),
+        0.3
+      ),
+      "statusBar.background": color,
+      "statusBar.foreground": getContrastingColor(color),
+      "statusBarItem.hoverBackground": setAlpha(
+        getContrastingColor(color),
+        0.3
+      ),
+      "statusBarItem.remoteBackground": color,
+      "statusBarItem.remoteForeground": getContrastingColor(color),
     },
     // vscode.ConfigurationTarget.Global,全局配置
-    vscode.ConfigurationTarget.Workspace, // 局部配置
+    vscode.ConfigurationTarget.Workspace // 局部配置
   );
 }
+
 export function activate(context: vscode.ExtensionContext) {
   // activationEvents.onStartupFinished 将会在reload 和 new window 时触发
-  const userColor = recoverColorConfig();
+  recoverColorConfig();
 
-  const provider = new ColorsViewProvider(context.extensionUri,userColor);
+  const provider = new ColorsViewProvider(context.extensionUri);
 
-  context.subscriptions.push(vscode.window.registerWebviewViewProvider(ColorsViewProvider.viewType, provider));
-  // 监听新建窗口事件
-  // context.subscriptions.push(vscode.window.onDidChangeWindowState((e) => {
-  //   if (e.focused && e.window.state.focused) {
-  //     console.log("New window created");
-  //   }
-  // }));
-
-  // // 监听重新加载窗口事件
-  // context.subscriptions.push(vscode.commands.registerCommand('_extension.reloadWindow', () => {
-  //   console.log("Window reloaded");
-  // }));
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      ColorsViewProvider.viewType,
+      provider
+    )
+  );
 }
 class ColorsViewProvider implements vscode.WebviewViewProvider {
-  public static readonly viewType = 'coralize-view';
+  public static readonly viewType = "coralize-view";
 
   private _view?: vscode.WebviewView;
 
-  constructor(private readonly _extensionUri: vscode.Uri,private userColor?: string) {}
+  constructor(private readonly _extensionUri: vscode.Uri) {}
 
   public resolveWebviewView(
     webviewView: vscode.WebviewView,
     context: vscode.WebviewViewResolveContext,
-    _token: vscode.CancellationToken,
+    _token: vscode.CancellationToken
   ) {
     this._view = webviewView;
-
-
-
-
-
 
     webviewView.webview.options = {
       // Allow scripts in the webview
@@ -86,14 +92,14 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
     };
 
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
-    // webviewView.webview.postMessage("hello");
 
+    
     webviewView.webview.onDidReceiveMessage((data) => {
       switch (data.type) {
-        case 'colorSelected': {
+        case "colorSelected": {
+          // 用户选中颜色 handler
           setColorForVscodeWindow(data.value);
           persistColorConfig(data.value);
-
           // vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`#${data.value}`));
           break;
         }
@@ -101,43 +107,53 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
     });
 
     // 同步用户设置颜色到 coralize webview, 一定要在 _getHtmlForWebview() 之后执行
-    console.log('this.userColor',this.userColor)
     let _view = this._view;
 
-    // 该方法仅会在首次触发以后再触发， 用户首次渲染coralize 的时候不会执行
-    webviewView.onDidChangeVisibility(visible => {
-      if(this.userColor){
-        _view.webview.postMessage({type:"syncCoralizeState",value: this.userColor});
-
+    // 当用户点击activity bar: coralize 按钮时，该方法仅会在首次触发以后再触发， 用户首次渲染coralize 的时候不会执行
+    webviewView.onDidChangeVisibility((visible) => {
+      const _settingColor = getSettingColor();
+      if (_settingColor) {
+        // 同步 coralize 的颜色状态
+        _view.webview.postMessage({
+          type: "syncCoralizeState",
+          value: _settingColor,
+        });
       }
     });
 
-    
-    // 没有找到 类似 loaded 或者 mounted 的方法
-    if(this.userColor){
-      setTimeout(() => {  
-        _view.webview.postMessage({type:"syncCoralizeState",value: this.userColor});
+    // 没有找到 类似 loaded 或者 mounted 的方法， 直接在 activate 中去同步 coralize 状态好像获取不到 webview(undefined)
+    // TODO: 待优化！
+    const _settingColor = getSettingColor();
+    if (_settingColor) {
+      setTimeout(() => {
+        _view.webview.postMessage({
+          type: "syncCoralizeState",
+          value: _settingColor,
+        });
       }, 800);
     }
   }
 
-  // public addColor() {
-  //   if (this._view) {
-  //     this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
-  //     this._view.webview.postMessage({ type: 'addColor' });
-  //   }
-  // }
-
 
   private _getHtmlForWebview(webview: vscode.Webview) {
     // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
-    const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'template','dist', 'main.js'));
+    const scriptUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "template", "dist", "main.js")
+    );
 
     // Do the same for the stylesheet.
-    const fontUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'template','dist', 'font.css'));
-    const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'template','dist', 'reset.css'));
-    const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'template','dist', 'vscode.css'));
-    const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'template','dist', 'main.css'));
+    const fontUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "template", "dist", "font.css")
+    );
+    const styleResetUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "template", "dist", "reset.css")
+    );
+    const styleVSCodeUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "template", "dist", "vscode.css")
+    );
+    const styleMainUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "template", "dist", "main.css")
+    );
 
     // Use a nonce to only allow a specific script to be run.
     const nonce = getNonce();
@@ -218,8 +234,9 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
 }
 
 function getNonce() {
-  let text = '';
-  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let text = "";
+  const possible =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   for (let i = 0; i < 32; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }

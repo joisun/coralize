@@ -45,6 +45,10 @@
             "null"
           ],
           "default": null
+        },
+        "coralize.default": {
+          "type": ["array"],
+          "default": null
         }
       }
     }
