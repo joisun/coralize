@@ -2,7 +2,7 @@
   "name": "coralize",
   "displayName": "coralize",
   "description": "customize the color of vscode window",
-  "version": "0.3.1",
+  "version": "1.0.0",
   "publisher": "sunzhongyi",
   "icon": "resources/coralize.png",
   "engines": {
@@ -46,7 +46,6 @@
           ],
           "default": null,
           "description": "auto set by coralize, and no need to set mannually"
-
         },
         "coralize.applyToTitleBar": {
           "type": "boolean",
@@ -63,7 +62,6 @@
           "default": true,
           "description": "Specifie Whether Apply Coralize Color To Status Bar"
         }
-
       }
     }
   },
