@@ -1,5 +1,7 @@
 import * as vscode from "vscode";
-import { getContrastingColor, setAlpha } from "./utils/utils";
+import { getContrastingColor, setAlpha, ligherColor } from "./utils/utils";
+import { WorkspaceConfiguration } from "vscode";
+import { ColorCustomization } from "./shared/ColorCustomization";
 
 function recoverColorConfig() {
   // 根据用户 .vscode/settings.json.coralize.color，还原设定
@@ -10,17 +12,16 @@ function recoverColorConfig() {
   }
 }
 
-function setRandomColorsConfig(){
-    // TODO: 设置用户默认颜色，
 
-    
-  // await config.update('coralize.default', [1,2,3], vscode.ConfigurationTarget.Global);
-}
 
 function getSettingColor() {
   const config = vscode.workspace.getConfiguration();
   return config.get("coralize.color") as string;
 }
+
+const config = vscode.workspace.getConfiguration();
+
+console.log('vscode.ThemeColor', vscode.window.activeColorTheme)
 
 async function persistColorConfig(color: string) {
   // 持久化coralize 配置到 .vscode/settings.json,该配置字段需要在 package.json 中注册
@@ -35,28 +36,90 @@ async function persistColorConfig(color: string) {
 
 async function setColorForVscodeWindow(color: string) {
   const config = vscode.workspace.getConfiguration();
+  const ConfigItems = [
+    "coralize.applyToTitleBar",
+    "coralize.applyToSideBar",
+    "coralize.applyToStatusBar",
+
+  ]
+  const computedConfig = ConfigItems.map(item => {
+    return {
+      field: item,
+      value: config.get(item)
+    }
+  })
+
+
+  // Config Item Object
+  const CIO = {} as ColorCustomization;
+
+  const contrastColor = getContrastingColor(color)
+  const lighterColor = ligherColor(color, 30)
+  const alphaColor = setAlpha(
+    contrastColor,
+    0.8
+  );
+  const _alphaColor = setAlpha(
+    contrastColor,
+    0.3
+  )
+
+  computedConfig.forEach(({ field, value }) => {
+    CIO["tab.activeBorder"]= lighterColor;
+
+    switch (field) {
+      case "coralize.applyToTitleBar":
+        if (value) {
+          CIO["titleBar.activeBackground"] = color;
+          CIO["titleBar.activeForeground"] = contrastColor
+          CIO["titleBar.inactiveBackground"] = color
+          CIO["titleBar.inactiveForeground"] = contrastColor
+        }
+        break;
+      case "coralize.applyToSideBar":
+        if (value) {
+          CIO["activityBar.background"] = color
+          CIO["activityBar.foreground"] = contrastColor
+          CIO["activityBar.inactiveForeground"] = _alphaColor
+          CIO["activityBar.activeBorder"] = alphaColor
+        }
+        break;
+      case "coralize.applyToStatusBar":
+        if (value) {
+          CIO["statusBar.background"] = color;
+          CIO["statusBar.foreground"] = contrastColor;
+          CIO["statusBarItem.hoverBackground"] = _alphaColor;
+          CIO["statusBarItem.remoteBackground"] = lighterColor;
+          CIO["statusBarItem.remoteForeground"] = contrastColor
+        }
+        break;
+
+    }
+  })
+  // console.log('CIO',CIO)
+
   await config.update(
-    "workbench.colorCustomizations",
-    {
-      "titleBar.activeBackground": color,
-      "titleBar.activeForeground": getContrastingColor(color),
-      "titleBar.inactiveBackground": color,
-      "titleBar.inactiveForeground": getContrastingColor(color),
-      "activityBar.background": color,
-      "activityBar.foreground": getContrastingColor(color),
-      "activityBar.inactiveForeground": setAlpha(
-        getContrastingColor(color),
-        0.3
-      ),
-      "statusBar.background": color,
-      "statusBar.foreground": getContrastingColor(color),
-      "statusBarItem.hoverBackground": setAlpha(
-        getContrastingColor(color),
-        0.3
-      ),
-      "statusBarItem.remoteBackground": color,
-      "statusBarItem.remoteForeground": getContrastingColor(color),
-    },
+    "workbench.colorCustomizations", { ...CIO },
+    // {
+    //   "titleBar.activeBackground": color,
+    //   "titleBar.activeForeground": getContrastingColor(color),
+    //   "titleBar.inactiveBackground": color,
+    //   "titleBar.inactiveForeground": getContrastingColor(color),
+    //   "activityBar.background": color,
+    //   "activityBar.foreground": getContrastingColor(color),
+    //   "activityBar.inactiveForeground": setAlpha(
+    //     getContrastingColor(color),
+    //     0.3
+    //   ),
+    //   "statusBar.background": color,
+    //   "statusBar.foreground": getContrastingColor(color),
+    //   "statusBarItem.hoverBackground": setAlpha(
+    //     getContrastingColor(color),
+    //     0.3
+    //   ),
+    //   "statusBarItem.remoteBackground": color,
+    //   "statusBarItem.remoteForeground": getContrastingColor(color),
+    // },
     // vscode.ConfigurationTarget.Global,全局配置
     vscode.ConfigurationTarget.Workspace // 局部配置
   );
@@ -82,7 +145,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
 
   private _view?: vscode.WebviewView;
 
-  constructor(private readonly _extensionUri: vscode.Uri) {}
+  constructor(private readonly _extensionUri: vscode.Uri) { }
 
   public resolveWebviewView(
     webviewView: vscode.WebviewView,
@@ -100,7 +163,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
-    
+
     webviewView.webview.onDidReceiveMessage((data) => {
       switch (data.type) {
         case "colorSelected": {
@@ -252,4 +315,4 @@ function getNonce() {
   return text;
 }
 
-export function deactivate() {}
+export function deactivate() { }

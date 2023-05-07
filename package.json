@@ -44,14 +44,26 @@
             "string",
             "null"
           ],
-          "default": null
+          "default": null,
+          "description": "auto set by coralize, and no need to set mannually"
+
         },
-        "coralize.default": {
-          "type": [
-            "array"
-          ],
-          "default": null
+        "coralize.applyToTitleBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Specifie Whether Apply Coralize Color To Title Bar"
+        },
+        "coralize.applyToSideBar": {
+          "type": "boolean",
+          "default": false,
+          "description": "Specifie Whether Apply Coralize Color To Side Bar"
+        },
+        "coralize.applyToStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Specifie Whether Apply Coralize Color To Status Bar"
         }
+
       }
     }
   },

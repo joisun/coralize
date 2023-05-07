@@ -50,4 +50,22 @@ export const setAlpha = function(color:string,alpha:number){
 }
 
 
+export const  ligherColor = function(hexColor:string, brightness:number) {
+    // 将16进制颜色转换为RGB颜色
+    var red = parseInt(hexColor.substring(1, 3), 16);
+    var green = parseInt(hexColor.substring(3, 5), 16);
+    var blue = parseInt(hexColor.substring(5, 7), 16);
   
+    // 调整亮度
+    red += brightness;
+    green += brightness;
+    blue += brightness;
+  
+    // 确保RGB值在0到255之间
+    red = Math.max(0, Math.min(255, red));
+    green = Math.max(0, Math.min(255, green));
+    blue = Math.max(0, Math.min(255, blue));
+  
+    // 将RGB颜色转换为16进制颜色并返回
+    return "#" + red.toString(16).padStart(2, "0") + green.toString(16).padStart(2, "0") + blue.toString(16).padStart(2, "0");
+  }
