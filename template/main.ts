@@ -3697,16 +3697,16 @@ const colors: Colors = [
 // It cannot access the main VS Code APIs directly.
 if (typeof acquireVsCodeApi !== "undefined") {
   const vscode = acquireVsCodeApi();
-  
+
   // const config = vscode.workspace.getConfiguration();
   // const color =  config.get("coralize.default");
   // console.log('color',color)
-  
-  
 
 
 
-  function onColorClicked(color) {
+
+
+  function postColorSetMsg(color) {
     vscode.postMessage({ type: 'colorSelected', value: color });
   }
 }
@@ -3739,10 +3739,8 @@ function init() {
       let copydata = colors[i].hex;
       // copytext(copydata);
       // myFunction(copydata);
-      try {
-        onColorClicked(copydata);//postMessage to vscode
-      } catch (e) { }
-      setCurrentColor(copydata,false)
+
+      setCurrentColor(copydata, false)
       // let snackbar = document.getElementById('snackbar')!;
       // snackbar.style.color = colors[i].hex;
       // let headE = (document.getElementById('head')!.style.color = colors[i].hex);
@@ -3754,7 +3752,7 @@ function init() {
 
   }
 
-  
+
 }
 
 
@@ -3764,7 +3762,7 @@ const anchors = document.querySelectorAll('a[href^="#"]') as NodeListOf<HTMLAnch
 anchors.forEach((anchor) => {
   anchor.addEventListener('click', function (e) {
     e.preventDefault();
-    const targetId = this.getAttribute('href')!.replace("#","");
+    const targetId = this.getAttribute('href')!.replace("#", "");
     document.getElementById(targetId)!.scrollIntoView({
       behavior: 'smooth',//在 vscode webview 中无效, smooth 效果通过 css 设置了
     });
@@ -3800,12 +3798,12 @@ function myFunction(copydata: string) {
 
 // 监听 message
 
-window.addEventListener('message', function(event) {
+window.addEventListener('message', function (event) {
   // 处理接收到的消息
-  const {type,value} = event.data
+  const { type, value } = event.data
   switch (type) {
     case 'syncCoralizeState': {
-      setCurrentColor(value,true)
+      setCurrentColor(value, true)
       // vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`#${data.value}`));
       break;
     }
@@ -3814,48 +3812,53 @@ window.addEventListener('message', function(event) {
 
 // 监听button
 const defaultSet = [
-  "#15231b","#141e1b","#21373d","#101f30","#131824","#0f1423","#1f2040","#1c0d1a","#310f1b","#4c1f24","#503e2a","#4a4035"
+  "#15231b", "#141e1b", "#21373d", "#101f30", "#131824", "#0f1423", "#1f2040", "#1c0d1a", "#310f1b", "#4c1f24", "#503e2a", "#4a4035"
 ]
-button?.addEventListener("click",()=>{
+button?.addEventListener("click", () => {
   console.log("clicked")
   const svg = button.querySelector("svg") as SVGElement;
   svg?.classList.add("active")
   const index = Math.floor(Math.random() * defaultSet.length)
-  setCurrentColor(defaultSet[index],true)
-  setTimeout(()=>{
+  setCurrentColor(defaultSet[index], true)
+  setTimeout(() => {
     svg?.classList.remove("active")
-  },300)
+  }, 300)
 })
 
 
-function setCurrentColor(color:string,scroll:boolean){
-  const findColorItem = colors.find(_color=>_color.hex === color)
-  const {hex,name,pinyin} = findColorItem as Color
+function setCurrentColor(color: string, scroll: boolean) {
+  try {
+    postColorSetMsg(color);//postMessage to vscode
+  } catch (e) { }
+  const findColorItem = colors.find(_color => _color.hex === color)
+  const { hex, name, pinyin } = findColorItem as Color
   colorNameE.style.color = color;
   searchboxE.value = color;
   searchboxE.style.color = color;
-  searchboxE.style.backgroundColor = setAlpha(getContrastingColor(color),.7)
+  searchboxE.style.backgroundColor = setAlpha(getContrastingColor(color), .7)
   colorNameE.innerHTML = name;
-  
+
   foreseeE.style.backgroundColor = color
   // button!.style.color = color;
   button!.style.color = getContrastingColor(color);
   scroll && scrollTo(pinyin)
 
+
+
 }
 
 const colorPalette = document.getElementById("color-palette")!
-function scrollTo(pinyin:string,smooth:boolean=false){
+function scrollTo(pinyin: string, smooth: boolean = false) {
   const kids = document.querySelectorAll(".kid") as NodeListOf<HTMLDivElement>
   const _kids = Array.from(kids)
-  const targetKid = _kids.find(kid=>kid.id === pinyin)
-  if(targetKid){
+  const targetKid = _kids.find(kid => kid.id === pinyin)
+  if (targetKid) {
     (!smooth) && (colorPalette.style.scrollBehavior = "auto")
     targetKid.scrollIntoView({
-        behavior: "instant",
-      });
-    }
-    colorPalette.style.scrollBehavior = "smooth"
+      behavior: "instant",
+    });
+  }
+  colorPalette.style.scrollBehavior = "smooth"
 
 }
 
@@ -3907,7 +3910,7 @@ function rgbaToHex(r: number, g: number, b: number, a: number = 1): string {
   return `#${rHex}${gHex}${bHex}${aHex}`;
 }
 
-function setAlpha(color:string,alpha:number){
-  const {r,g,b} = hexToRgb(color)!
-  return rgbaToHex(r,g,b,alpha)
+function setAlpha(color: string, alpha: number) {
+  const { r, g, b } = hexToRgb(color)!
+  return rgbaToHex(r, g, b, alpha)
 }

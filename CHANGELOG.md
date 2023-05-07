@@ -6,6 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [0.3.1] - Sun May 07 2023
+### Fixed
+- vscode random 颜色 set
+
 ## [0.3.0] - Sun May 07 2023
 ### Added
 - 新增随机深色按钮

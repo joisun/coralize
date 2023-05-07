@@ -3689,7 +3689,7 @@ if (typeof acquireVsCodeApi !== "undefined") {
     // const config = vscode.workspace.getConfiguration();
     // const color =  config.get("coralize.default");
     // console.log('color',color)
-    function onColorClicked(color) {
+    function postColorSetMsg(color) {
         vscode_1.postMessage({ type: 'colorSelected', value: color });
     }
 }
@@ -3716,10 +3716,6 @@ function init() {
             var copydata = colors[i].hex;
             // copytext(copydata);
             // myFunction(copydata);
-            try {
-                onColorClicked(copydata); //postMessage to vscode
-            }
-            catch (e) { }
             setCurrentColor(copydata, false);
             // let snackbar = document.getElementById('snackbar')!;
             // snackbar.style.color = colors[i].hex;
@@ -3793,6 +3789,10 @@ button === null || button === void 0 ? void 0 : button.addEventListener("click",
     }, 300);
 });
 function setCurrentColor(color, scroll) {
+    try {
+        postColorSetMsg(color); //postMessage to vscode
+    }
+    catch (e) { }
     var findColorItem = colors.find(function (_color) { return _color.hex === color; });
     var _a = findColorItem, hex = _a.hex, name = _a.name, pinyin = _a.pinyin;
     colorNameE.style.color = color;
