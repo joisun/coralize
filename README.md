@@ -1,6 +1,8 @@
 # Coralize 
 
 
+[marketplace/coralize](https://marketplace.visualstudio.com/items?itemName=sunzhongyi.coralize)
+
 
 以高效且便捷的方式自定义Visual Studio Code工作区窗口的状态栏、标题栏以及活动边栏等颜色！这将对那些需要同时打开多个vscode窗口/工作区的人非常有用。Coralize提供了一系列中国传统文化色彩，并搭配友好的用户界面。
 
