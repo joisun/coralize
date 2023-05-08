@@ -2,7 +2,9 @@
 
 
 
-Customize vscode window color in easier way !
+以高效且便捷的方式自定义Visual Studio Code工作区窗口的状态栏、标题栏以及活动边栏等颜色！这将对那些需要同时打开多个vscode窗口/工作区的人非常有用。Coralize提供了一系列中国传统文化色彩，并搭配友好的用户界面。
+
+> Customize the color scheme of Visual Studio Code's workspace window, including the status bar, title bar, and activity side bar, with ease and efficiency. This feature is particularly useful for those who frequently work with multiple instances of VSCode or multiple workspaces. Coralize offers a variety of Chinese traditional culture-inspired color schemes, presented through a user-friendly interface.
 
 ![](https://raw.githubusercontent.com/jaycethanks/coralize/main/doc/doc.png)
 

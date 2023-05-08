@@ -1,7 +1,7 @@
 {
   "name": "coralize",
   "displayName": "coralize",
-  "description": "customize the color of vscode window",
+  "description": "customize the color of vscode window: change the color of Status bar, Title bar, and Activity Bar for your Visual Studio Code's Workspace quickly in an easy way.",
   "version": "1.0.1",
   "publisher": "sunzhongyi",
   "icon": "resources/coralize.png",
@@ -11,6 +11,15 @@
   "repository": "https://github.com/jaycethanks/coralize/tree/main",
   "categories": [
     "Other"
+  ],
+  "keywords": [
+    "Theme",
+    "Colors",
+    "window Color",
+    "Workspace Color",
+    "Title Bar",
+    "Status Bar",
+    "Activity Bar"
   ],
   "activationEvents": [
     "onStartupFinished"
