@@ -1,6 +1,8 @@
 # Coralize 
 
 
+[marketplace/coralize](https://marketplace.visualstudio.com/items?itemName=sunzhongyi.coralize)
+
 
 Customize vscode window color in easier way !
 
