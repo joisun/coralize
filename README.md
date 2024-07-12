@@ -34,9 +34,7 @@
 
 
 
-## Inspiring
 
-Coralize is Inspired by Peacock.
 
 
 
